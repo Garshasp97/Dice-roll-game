@@ -28,6 +28,7 @@ diceEl.classList.add('hidden');
 let currentScore = 0;
 let currentPlayer = 0;
 let holdScore = 0;
+let playing = true;
 
 // Reset game function
 function resetGame() {
@@ -46,49 +47,54 @@ function resetGame() {
   score0El.textContent = 0;
   holdScorePlayer1 = 0;
   score1El.textContent = 0;
+  playing = true;
+  diceEl.classList.remove('hidden');
 }
 
 // Rolling the dice
-rollDiceBtn.addEventListener('click', function () {
-  diceEl.classList.remove('hidden');
-  // 1. Generating a random dice roll
-  const dices = Math.floor(Math.random() * 6) + 1;
-  console.log(dices);
-  // 2. Display dice
-  diceEl.src = dicesToRoll[dices];
-  // SIMPLER WAY OF DISPLAYING diceEl.src = `dice-${dices}.png`;
-  // 3. Check for player rolled 1 switch to other player
-  if (dices !== 1) {
-    // add to current score
-    currentScore += dices;
-    document.getElementById(`current--${currentPlayer}`).textContent =
-      currentScore;
-  } else {
-    // switch to other player
-    document.getElementById(`current--${currentPlayer}`).textContent = 0;
-    holdScore = 0;
-    currentScore = 0;
-    // GOOD LUCK UNDERSTANDING MY CODE AFTER THIS COMMENT - IT WORKS THO
-    if (currentPlayer === 0) {
-      holdScorePlayer0 = 0;
-      score0El.textContent = holdScorePlayer0;
-      document.getElementById(`current--${currentPlayer}`).textContent =
-        currentScore;
-      activePlayer0.classList.remove('player--active');
-      activePlayer1.classList.add('player--active');
-    } else if (currentPlayer === 1) {
-      holdScorePlayer1 = 0;
-      score1El.textContent = holdScorePlayer1;
-      document.getElementById(`current--${currentPlayer}`).textContent =
-        currentScore;
-      activePlayer1.classList.remove('player--active');
-      activePlayer0.classList.add('player--active');
-    }
 
-    currentPlayer = currentPlayer === 0 ? 1 : 0;
-    currentScore = 0;
-    document.getElementById(`current--${currentPlayer}`).textContent =
-      currentScore;
+rollDiceBtn.addEventListener('click', function () {
+  if (playing) {
+    diceEl.classList.remove('hidden');
+    // 1. Generating a random dice roll
+    const dices = Math.floor(Math.random() * 6) + 1;
+    console.log('dice:' + dices);
+    // 2. Display dice
+    diceEl.src = dicesToRoll[dices];
+    // SIMPLER WAY OF DISPLAYING diceEl.src = `dice-${dices}.png`;
+    // 3. Check for player rolled 1 switch to other player
+    if (dices !== 1) {
+      // add to current score
+      currentScore += dices;
+      document.getElementById(`current--${currentPlayer}`).textContent =
+        currentScore;
+    } else {
+      // switch to other player
+      document.getElementById(`current--${currentPlayer}`).textContent = 0;
+      holdScore = 0;
+      currentScore = 0;
+      // GOOD LUCK UNDERSTANDING MY CODE AFTER THIS COMMENT - IT WORKS THO
+      if (currentPlayer === 0) {
+        holdScorePlayer0 = 0;
+        score0El.textContent = holdScorePlayer0;
+        document.getElementById(`current--${currentPlayer}`).textContent =
+          currentScore;
+        activePlayer0.classList.remove('player--active');
+        activePlayer1.classList.add('player--active');
+      } else if (currentPlayer === 1) {
+        holdScorePlayer1 = 0;
+        score1El.textContent = holdScorePlayer1;
+        document.getElementById(`current--${currentPlayer}`).textContent =
+          currentScore;
+        activePlayer1.classList.remove('player--active');
+        activePlayer0.classList.add('player--active');
+      }
+
+      currentPlayer = currentPlayer === 0 ? 1 : 0;
+      currentScore = 0;
+      document.getElementById(`current--${currentPlayer}`).textContent =
+        currentScore;
+    }
   }
 });
 
@@ -102,9 +108,11 @@ holdScoreBtn.addEventListener('click', function () {
     holdScore = 0;
     score0El.textContent = holdScorePlayer0;
     if (holdScorePlayer0 >= 100) {
+      playing = false;
       activePlayer0.classList.add('player--winner');
       document.getElementById('name--0').textContent = '🎉YOU WIN🎉';
-      setTimeout(resetGame, 6000);
+      diceEl.classList.add('hidden');
+      setTimeout(resetGame, 10000);
     } else {
       activePlayer0.classList.remove('player--active');
       document.getElementById(`current--${currentPlayer}`).textContent = 0;
@@ -118,9 +126,11 @@ holdScoreBtn.addEventListener('click', function () {
     holdScore = 0;
     score1El.textContent = holdScorePlayer1;
     if (holdScorePlayer1 >= 100) {
+      playing = false;
       activePlayer1.classList.add('player--winner');
       document.getElementById('name--1').textContent = '🎉YOU WIN🎉';
-      setTimeout(resetGame, 6000);
+      diceEl.classList.add('hidden');
+      setTimeout(resetGame, 10000);
     } else {
       activePlayer1.classList.remove('player--active');
       document.getElementById(`current--${currentPlayer}`).textContent = 0;
